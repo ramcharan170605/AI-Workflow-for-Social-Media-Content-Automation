@@ -49,6 +49,8 @@ The goal of this project was to explore:
 ```text
 Google Sheets Trigger
         ↓
+Optional Xquik Source Context
+        ↓
 AI Article Summarizer
         ↓
 Generate LinkedIn Content
@@ -57,6 +59,26 @@ Generate Twitter/X Content
         ↓
 Auto Publish to Social Platforms
 ```
+
+## Optional Xquik Source Context
+
+For posts that should respond to current X/Twitter discussion, add an n8n HTTP
+Request node between Google Sheets and the article summarizer.
+
+Recommended node fields:
+
+```text
+Method: GET
+URL: https://xquik.com/api/v1/x/tweets/search
+Header: X-API-Key = {{$env.XQUIK_API_KEY}}
+Query: q = {{$json.newslinks || $json.topic || $json.keyword}}
+Query: limit = 5
+```
+
+Map each result's tweet text, author, URL, and timestamp into the summarizer
+prompt as source evidence. Keep the existing LinkedIn and X publish nodes
+unchanged, and review generated rows or run against a test account before
+activating automatic posting.
 
 ---
 
